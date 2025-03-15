@@ -81,6 +81,7 @@
         }
     </style>
     <script src="https://js.puter.com/v2/"></script>
+
 </head>
 
 <body>
@@ -95,7 +96,6 @@
 
     <script>
         const messages = [];
-
         function addMessage(msg, isUser) {
             const messagesDiv = document.getElementById("messages");
             const messageDiv = document.createElement("div");
@@ -116,23 +116,13 @@
                 input.value = '';
                 // Record the message in array of messages
                 messages.push({ content: message, role: 'user' });
-
                 // Call the AI chat function
-                puter.ai.chat(messages)
-                    .then(response => {
-                        // Check if the response has a message or a specific data field
-                        let aiMessage = 'Sorry, I didn’t understand that.';
-                        if (response && response.message) {
-                            aiMessage = response.message; // Direct message field
-                        } else if (response && response.data && response.data.message) {
-                            aiMessage = response.data.message; // Message inside data object
-                        }
-                        addMessage(aiMessage, false); // Display AI response
-                        messages.push({ content: aiMessage, role: 'assistant' });
-                    })
-                    .catch(error => {
-                        console.error("AI response error:", error);
-                    });
+                puter.ai.chat(messages).then(response => {
+                    addMessage(response, false);
+                    messages.push(response.message);
+                }).catch(error => {
+                    console.error("AI response error:", error);
+                });
             }
         }
     </script>
