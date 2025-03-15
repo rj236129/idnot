@@ -121,7 +121,7 @@
                 // Call the AI chat function
                 puter.ai.chat(messages)
                     .then(response => {
-                        // Handle response properly
+                        // Check if response.message exists and access it
                         const aiMessage = response.message ? response.message : 'Sorry, I didn’t understand that.';
                         addMessage(aiMessage, false); // Display AI response
                         messages.push({ content: aiMessage, role: 'assistant' });
