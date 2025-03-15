@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Chat App</title>
     <style>
-        /* General page styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -15,96 +14,70 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f7f7f7;
+            background-color: #f0f0f0;
             flex-direction: column;
         }
 
-        /* Chat container */
         #chat-container {
             width: 80%;
             max-width: 600px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            margin: auto;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             padding: 20px;
-            margin: 20px 0;
-            display: flex;
-            flex-direction: column;
-            height: 80vh;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        /* Messages section */
         #messages {
-            flex-grow: 1;
+            height: 300px;
             overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
             padding: 10px;
-            border-bottom: 2px solid #ddd;
-            margin-bottom: 15px;
         }
 
-        /* Individual message styling */
         .message {
-            padding: 10px;
+            padding: 5px;
             margin: 5px 0;
-            border-radius: 10px;
-            max-width: 75%;
-            line-height: 1.5;
-        }
-
-        /* User message */
-        .user-message {
-            text-align: right;
-            background-color: #e1f5fe;
-            color: #006064;
-            margin-left: auto;
-        }
-
-        /* AI message */
-        .ai-message {
-            text-align: left;
-            background-color: #007bff;
+            border-radius: 4px;
+            background: #2c7aef;
             color: white;
         }
 
-        /* Input area */
+        .user-message {
+            text-align: right;
+            background: #f9f9f9;
+            color: black;
+        }
+
+        .user-message .message {
+            background: #e0f7fa;
+        }
+
         #chat-input {
             display: flex;
-            margin-top: 15px;
         }
 
         #chat-input input {
             flex-grow: 1;
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            outline: none;
-            transition: all 0.3s ease;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
-        #chat-input input:focus {
-            border-color: #007bff;
-        }
-
-        /* Button styling */
         #chat-input button {
-            padding: 12px 20px;
-            background-color: #007bff;
+            padding: 10px 20px;
+            background: #007bff;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
         #chat-input button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Footer text */
-        p {
-            font-size: 14px;
-            color: #777;
+            background: #0056b3;
         }
     </style>
     <script src="https://js.puter.com/v2/"></script>
@@ -112,69 +85,61 @@
 
 <body>
     <div id="chat-container">
-        <!-- Messages Display -->
         <div id="messages"></div>
-
-        <!-- Chat Input Area -->
         <div id="chat-input">
             <input type="text" id="input-message" placeholder="Type a message...">
             <button onclick="sendMessage()">Send</button>
         </div>
     </div>
-
-    <!-- Footer Text -->
     <p>Created using Puter.JS</p>
 
     <script>
         const messages = [];
 
-        // Function to add a message in chat
+        // Function to add message to the chat box
         function addMessage(msg, isUser) {
             const messagesDiv = document.getElementById("messages");
             const messageDiv = document.createElement("div");
             messageDiv.classList.add("message");
-
-            // Add class based on message type (user or AI)
             if (isUser) {
                 messageDiv.classList.add("user-message");
-            } else {
-                messageDiv.classList.add("ai-message");
             }
-
             messageDiv.textContent = msg;
             messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto scroll to latest message
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
         // Function to send user message and get AI response
-       // Function to send user message and get AI response
-async function sendMessage() {
-    const input = document.getElementById("input-message");
-    const message = input.value.trim();
+        async function sendMessage() {
+            const input = document.getElementById("input-message");
+            const message = input.value.trim();
 
-    if (message) {
-        // Add user message to chat
-        addMessage(message, true);
-        input.value = '';
+            if (message) {
+                // Add user message to chat
+                addMessage(message, true);
+                input.value = '';
 
-        // Save user message
-        messages.push({ content: message, role: 'user' });
+                // Save user message
+                messages.push({ content: message, role: 'user' });
 
-        try {
-            // AI response handling
-            const response = await puter.ai.chat(messages);
+                try {
+                    // AI response handling
+                    const response = await puter.ai.chat(messages);
 
-            // If response is an object, convert it to string
-            const responseMessage = typeof response === 'object' ? JSON.stringify(response) : response;
+                    // Extract the actual content of the response
+                    const responseMessage = response.message.content; // Getting the actual message from the response
 
-            addMessage(responseMessage, false); // Add AI message to chat
-            messages.push(responseMessage); // Save AI message to the array
-        } catch (error) {
-            console.error("AI response error:", error);
-            addMessage("Sorry, there was an error processing your message.", false);
+                    // Add AI response to chat
+                    addMessage(responseMessage, false);
+                    
+                    // Save AI message to the messages array
+                    messages.push({ content: responseMessage, role: 'assistant' });
+                } catch (error) {
+                    console.error("AI response error:", error);
+                    addMessage("Sorry, there was an error processing your message.", false);
+                }
+            }
         }
-    }
-}
     </script>
 </body>
 
