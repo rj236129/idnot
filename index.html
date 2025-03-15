@@ -81,7 +81,6 @@
         }
     </style>
     <script src="https://js.puter.com/v2/"></script>
-
 </head>
 
 <body>
@@ -121,21 +120,13 @@
                 // Call the AI chat function
                 puter.ai.chat(messages)
                     .then(response => {
-                        // Log the full response to see its structure
-                        console.log('AI Response:', response);
-
-                        // Check the structure of the response
-                        let aiMessage = '';
+                        // Check if the response has a message or a specific data field
+                        let aiMessage = 'Sorry, I didn’t understand that.';
                         if (response && response.message) {
-                            // If there's a message field
-                            aiMessage = response.message;
+                            aiMessage = response.message; // Direct message field
                         } else if (response && response.data && response.data.message) {
-                            // If message is inside a data object
-                            aiMessage = response.data.message;
-                        } else {
-                            aiMessage = 'Sorry, I didn’t understand that.';
+                            aiMessage = response.data.message; // Message inside data object
                         }
-
                         addMessage(aiMessage, false); // Display AI response
                         messages.push({ content: aiMessage, role: 'assistant' });
                     })
