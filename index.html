@@ -79,6 +79,11 @@
         #chat-input button:hover {
             background: #0056b3;
         }
+
+        .typing-indicator {
+            font-size: 0.9em;
+            color: gray;
+        }
     </style>
     <script src="https://js.puter.com/v2/"></script>
 
@@ -87,6 +92,7 @@
 <body>
     <div id="chat-container">
         <div id="messages"></div>
+        <div id="typing-indicator" class="typing-indicator" style="display: none;">AI is typing...</div>
         <div id="chat-input">
             <input type="text" id="input-message" placeholder="Type a message...">
             <button onclick="sendMessage()">Send</button>
@@ -114,14 +120,22 @@
             if (message) {
                 addMessage(message, true);
                 input.value = '';
-                // Record the message in array of messages
                 messages.push({ content: message, role: 'user' });
-                // Call the AI chat function
+
+                // Show typing indicator
+                document.getElementById("typing-indicator").style.display = "block";
+
+                // Call AI chat function
                 puter.ai.chat(messages).then(response => {
+                    // Hide typing indicator
+                    document.getElementById("typing-indicator").style.display = "none";
                     addMessage(response, false);
                     messages.push(response.message);
                 }).catch(error => {
                     console.error("AI response error:", error);
+                    // Hide typing indicator
+                    document.getElementById("typing-indicator").style.display = "none";
+                    addMessage("Sorry, something went wrong.", false);
                 });
             }
         }
