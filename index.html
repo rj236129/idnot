@@ -19,20 +19,18 @@
         }
 
         #chat-container {
-            width: 100%;
+            width: 80%;
             max-width: 600px;
-            height: 90vh; /* Take up most of the screen height */
+            margin: auto;
             background: white;
             border: 1px solid #ddd;
             border-radius: 4px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
         }
 
         #messages {
-            flex-grow: 1;
+            height: 300px;
             overflow-y: auto;
             border-bottom: 1px solid #ddd;
             margin-bottom: 20px;
@@ -59,7 +57,6 @@
 
         #chat-input {
             display: flex;
-            margin-top: 10px;
         }
 
         #chat-input input {
@@ -82,22 +79,9 @@
         #chat-input button:hover {
             background: #0056b3;
         }
-
-        #new-chat-btn {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #f44336;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        #new-chat-btn:hover {
-            background-color: #d32f2f;
-        }
     </style>
     <script src="https://js.puter.com/v2/"></script>
+
 </head>
 
 <body>
@@ -107,13 +91,11 @@
             <input type="text" id="input-message" placeholder="Type a message...">
             <button onclick="sendMessage()">Send</button>
         </div>
-        <button id="new-chat-btn" onclick="newChat()">New Chat</button>
     </div>
     <p>Created using Puter.JS</p>
 
     <script>
         const messages = [];
-
         function addMessage(msg, isUser) {
             const messagesDiv = document.getElementById("messages");
             const messageDiv = document.createElement("div");
@@ -134,24 +116,14 @@
                 input.value = '';
                 // Record the message in array of messages
                 messages.push({ content: message, role: 'user' });
-
                 // Call the AI chat function
                 puter.ai.chat(messages).then(response => {
-                    // Assuming response.message holds the AI's reply
-                    let aiMessage = response.message || "Sorry, I didn’t understand that."; // Default message if not found
-                    addMessage(aiMessage, false);
-                    messages.push({ content: aiMessage, role: 'assistant' });
+                    addMessage(response, false);
+                    messages.push(response.message);
                 }).catch(error => {
                     console.error("AI response error:", error);
                 });
             }
-        }
-
-        function newChat() {
-            // Clear the chat history
-            messages.length = 0;
-            document.getElementById("messages").innerHTML = "";
-            document.getElementById("input-message").value = "";
         }
     </script>
 </body>
