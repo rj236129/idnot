@@ -121,8 +121,21 @@
                 // Call the AI chat function
                 puter.ai.chat(messages)
                     .then(response => {
-                        // Check if response.message exists and access it
-                        const aiMessage = response.message ? response.message : 'Sorry, I didn’t understand that.';
+                        // Log the full response to see its structure
+                        console.log('AI Response:', response);
+
+                        // Check the structure of the response
+                        let aiMessage = '';
+                        if (response && response.message) {
+                            // If there's a message field
+                            aiMessage = response.message;
+                        } else if (response && response.data && response.data.message) {
+                            // If message is inside a data object
+                            aiMessage = response.data.message;
+                        } else {
+                            aiMessage = 'Sorry, I didn’t understand that.';
+                        }
+
                         addMessage(aiMessage, false); // Display AI response
                         messages.push({ content: aiMessage, role: 'assistant' });
                     })
