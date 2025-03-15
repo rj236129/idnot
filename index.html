@@ -147,29 +147,34 @@
         }
 
         // Function to send user message and get AI response
-        async function sendMessage() {
-            const input = document.getElementById("input-message");
-            const message = input.value.trim();
+       // Function to send user message and get AI response
+async function sendMessage() {
+    const input = document.getElementById("input-message");
+    const message = input.value.trim();
 
-            if (message) {
-                // Add user message to chat
-                addMessage(message, true);
-                input.value = '';
+    if (message) {
+        // Add user message to chat
+        addMessage(message, true);
+        input.value = '';
 
-                // Save user message
-                messages.push({ content: message, role: 'user' });
+        // Save user message
+        messages.push({ content: message, role: 'user' });
 
-                try {
-                    // AI response handling
-                    const response = await puter.ai.chat(messages);
-                    addMessage(response.message, false); // Add AI message to chat
-                    messages.push(response.message); // Save AI message to the array
-                } catch (error) {
-                    console.error("AI response error:", error);
-                    addMessage("Sorry, there was an error processing your message.", false);
-                }
-            }
+        try {
+            // AI response handling
+            const response = await puter.ai.chat(messages);
+
+            // If response is an object, convert it to string
+            const responseMessage = typeof response === 'object' ? JSON.stringify(response) : response;
+
+            addMessage(responseMessage, false); // Add AI message to chat
+            messages.push(responseMessage); // Save AI message to the array
+        } catch (error) {
+            console.error("AI response error:", error);
+            addMessage("Sorry, there was an error processing your message.", false);
         }
+    }
+}
     </script>
 </body>
 
